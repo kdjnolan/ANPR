@@ -22,11 +22,9 @@ Character Segmentation:
   -Map out and resize characters for recognition step to follow.
   
 Character Recognition
-  ---
   
 Machine Learning:
   -Uses supervised learning which uses a known (training) dataset to predict.
-  ---
  
  
 Various packages are needed including:
