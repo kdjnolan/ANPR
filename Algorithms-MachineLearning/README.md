@@ -1,7 +1,7 @@
 
 https://blog.devcenter.co/developing-a-license-plate-recognition-system-with-machine-learning-in-python-787833569ccd
 
-Using the blog above to learn the concepts/algorithms of:
+Using the blog above to learn the concepts of:
 
 Plate Localisation:
   -Convert image to binary.
@@ -22,10 +22,12 @@ Character Segmentation:
   -Map out and resize characters for recognition step to follow.
   
 Character Recognition
-
+  ---
+  
 Machine Learning:
   -Uses supervised learning which uses a known (training) dataset to predict.
-  
+  ---
+ 
  
 Various packages are needed including:
   scikit-learn   For machine learning.
