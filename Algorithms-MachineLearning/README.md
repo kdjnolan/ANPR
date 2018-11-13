@@ -25,3 +25,11 @@ Character Recognition
 
 Machine Learning:
   -Uses supervised learning which uses a known (training) dataset to predict.
+  
+ 
+Various packages are needed including:
+  scikit-learn   For machine learning
+  scikit-image   Contains scipy(complicated calculations), 
+                  numpy(array manipulations), 
+                  matplotlib(disp images,plot graphs),
+                  pillow(imaging lib)
