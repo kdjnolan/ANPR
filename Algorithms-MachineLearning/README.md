@@ -28,7 +28,7 @@ Machine Learning:
   
  
 Various packages are needed including:
-  scikit-learn   For machine learning
+  scikit-learn   For machine learning.
   scikit-image   Contains scipy(complicated calculations), 
                   numpy(array manipulations), 
                   matplotlib(disp images,plot graphs),
