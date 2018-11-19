@@ -47,8 +47,8 @@ Various packages are needed including:
   
   scikit-image   Contains scipy(complicated calculations), 
   
-                  numpy(array manipulations), 
+  numpy(array manipulations), 
                   
-                  matplotlib(disp images,plot graphs),
+  matplotlib(disp images,plot graphs),
                   
-                  pillow(imaging lib)
+  pillow(imaging lib)
