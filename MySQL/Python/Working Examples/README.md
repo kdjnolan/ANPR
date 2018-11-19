@@ -1,5 +1,5 @@
 W3Schools.com MySQL Python Examples
-https://www.w3schools.com/python/python_mysql_where.asp
+
 
 To access the MySQL database Python needs a MySQL driver.
 
