@@ -8,9 +8,13 @@ from skimage.io import imread
 from skimage.filters import threshold_otsu
 
 letters = [
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
-            'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T',
-            'U', 'V', 'W', 'X', 'Y', 'Z'
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            # edited for Ireland
+            'C', 'D', 'E', 
+            'G', 'H', 
+            'K', 'L', 'M', 'N', 'O',
+            'R', 'S', 'T',
+            'W', 'X', 'Y',
         ]
 
 def read_training_data(training_directory):
@@ -23,7 +27,7 @@ def read_training_data(training_directory):
             img_details = imread(image_path, as_grey=True)
             # converts each character image to binary image
             binary_image = img_details < threshold_otsu(img_details)
-            # the 2D array of each image is flattened because the machine learning
+            # the 2D array is flattened because the machine learning
             # classifier requires that each sample is a 1D array
             # therefore the 20*20 image becomes 1*400
             # in machine learning terms that's 400 features with each pixel
@@ -54,18 +58,16 @@ training_dataset_dir = os.path.join(current_dir, 'train')
 image_data, target_data = read_training_data(training_dataset_dir)
 
 # the kernel can be 'linear', 'poly' or 'rbf'
-# the probability was set to True so as to show
-# how sure the model is of it's prediction
+# show probability
 svc_model = SVC(kernel='linear', probability=True)
 
 cross_validation(svc_model, 4, image_data, target_data)
 
-# let's train the model with all the input data
+# train the model with all the input data
 svc_model.fit(image_data, target_data)
 
-# we will use the joblib module to persist the model
-# into files. This means that the next time we need to
-# predict, we don't need to train the model again
+# use the joblib module to persist the model
+# into files so don't need to train the model next time
 save_directory = os.path.join(current_dir, 'models/svc/')
 if not os.path.exists(save_directory):
     os.makedirs(save_directory)
