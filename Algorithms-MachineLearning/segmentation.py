@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import cca2
 
 
-license_plate = np.invert(cca2.plate_like_objects[2])
+license_plate = np.invert(cca2.plate_like_objects[0])
 
 labelled_plate = measure.label(license_plate)
 
