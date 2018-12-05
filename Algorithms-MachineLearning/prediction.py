@@ -1,3 +1,4 @@
+#prediction
 
 import os
 import segmentation
@@ -23,10 +24,7 @@ for eachPredict in classification_result:
 
 print(plate_string)
 
-# it's possible the characters are wrongly arranged
-# since that's a possibility, the column_list will be
-# used to sort the letters in the right order
-
+#column_list is used to sort the letters in the right order
 column_list_copy = segmentation.column_list[:]
 segmentation.column_list.sort()
 rightplate_string = ''
