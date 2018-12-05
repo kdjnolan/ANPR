@@ -8,10 +8,6 @@ import matplotlib.pyplot as plt
 import cca2
 
 
-# plate_like_objects[2] since I know that's the
-# license plate. We'll fix this later
-
-# The invert was done so as to convert the black pixel to white pixel and vice versa
 license_plate = np.invert(cca2.plate_like_objects[2])
 
 labelled_plate = measure.label(license_plate)
@@ -39,11 +35,12 @@ for regions in regionprops(labelled_plate):
                                        linewidth=2, fill=False)
         ax1.add_patch(rect_border)
 
-        # resize the characters to 20X20 and then append each character into the characters list
+        # resize the chars to 20X20 
         resized_char = resize(roi, (20, 20))
+        # append each character into the characters list
         characters.append(resized_char)
 
-        # this is just to keep track of the arrangement of the characters
+        # keep track of the arrangement of the characters
         column_list.append(x0)
 
 plt.show()
