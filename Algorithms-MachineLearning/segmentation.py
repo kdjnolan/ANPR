@@ -7,9 +7,8 @@ import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import cca2
 
-# on the image I'm using, the headlamps were categorized as a license plate
-# because their shapes were similar
-# for now I'll just use the plate_like_objects[2] since I know that's the
+
+# plate_like_objects[2] since I know that's the
 # license plate. We'll fix this later
 
 # The invert was done so as to convert the black pixel to white pixel and vice versa
@@ -19,10 +18,8 @@ labelled_plate = measure.label(license_plate)
 
 fig, ax1 = plt.subplots(1)
 ax1.imshow(license_plate, cmap="gray")
-# the next two lines is based on the assumptions that the width of
-# a license plate should be between 5% and 15% of the license plate,
-# and height should be between 35% and 60%
-# this will eliminate some
+# license plate width should be between 5% and 15% of the license plate,
+# and          height should be between 35% and 60%
 character_dimensions = (0.35*license_plate.shape[0], 0.60*license_plate.shape[0], 0.05*license_plate.shape[1], 0.15*license_plate.shape[1])
 min_height, max_height, min_width, max_width = character_dimensions
 
