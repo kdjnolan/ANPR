@@ -3,10 +3,25 @@
 -- create SQL database called users
 CREATE DATABASE `users`
 
+
+-- CREATE DATABASE users
+  
+CREATE TABLE users (
+    user_id int AUTO_INCREMENT,
+    user_name VARCHAR(45) NULL,
+    user_username VARCHAR(45) NOT NULL,
+    user_registration VARCHAR(45) NOT NULL,
+    user_password VARCHAR(500) NOT NULL,
+    PRIMARY KEY (user_id));
+
+insert into sprocedure_user (user_name, user_username, user_registration,user_password ) values ('name','username','registration','user_password');
+--  insert into users (user_name, user_username, user_registration,user_password ) values ('name','username','registration','user_password');
+
+  
   
 -- create table using python stored procedures
-Create TABLE `users`.sprocedure_user (
-  `user_id` INT AUTO_INCREMENT,
+Create TABLE `users`.`sprocedure_user` (
+  `user_id` INT DEFAULT NOT NULL AUTO_INCREMENT,
   `user_name` VARCHAR(45) NULL,
   `user_username` VARCHAR(45) NOT NULL,
   `user_registration` VARCHAR(45) NOT NULL,
@@ -15,8 +30,6 @@ Create TABLE `users`.sprocedure_user (
 
 insert into users (user_name,user_username,user_registration,user_password ) values ('name','username','registration','user_password');
 
-  
-  
   
   
  -- once created....
@@ -60,16 +73,50 @@ DELIMITER ;
 
 
 
+
+
+
+-- create a python stored procedure called sp_findPlate that recieves 1 value 
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_findPlate`(
+    IN p_registration VARCHAR(20)
+)
+BEGIN
+	 -- if the username already exists...
+    IF ( select exists (select * from sprocedure_user where user_registration like 'p_registration') ) THEN
+        select 'Plate Found!';
+    ELSE
+        select 'No Record of Plate on Database !!';
+    END IF;
+END$$
+DELIMITER ;
+
+
+
+
+
 -- IMPORTANT    GRANT ADMIN ACCESS TO THE DATABASE
 CREATE USER 'root'@'192.168.1.8' IDENTIFIED BY 'root';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.1.8'
 	WITH GRANT OPTION;
 
 -- IF USER LOCALHOST IS ALREADY CREATED
---  CREATE USER 'root'@'localhost' IDENTIFIED BY 'root'; --  uncomment if not
+--  CREATE USER 'root'@'localhost' IDENTIFIED BY 'root';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost'
 	WITH GRANT OPTION;
 
-
+-- pi on eircom network
+-- IF USER LOCALHOST IS ALREADY CREATED
+CREATE USER 'root'@'192.168.1.5' IDENTIFIED BY 'root';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.1.5'
+	WITH GRANT OPTION;
+	
+	
+	
+	-- .py
+--	print "Getting Reg"
+--	cursor.execute("SELECT * FROM users WHERE _registration=?")
+--	data = cursor.fetchone()
+--	print(str(data))
 	
 	
