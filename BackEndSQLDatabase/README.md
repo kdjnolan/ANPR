@@ -1,10 +1,10 @@
 SQL code to create storage for a list of registered users 
 
 
-Creates database users
+Creates the database:  users
 
 
-Creates field in a table
+Creates fields in a table:     id, name, username(P), registration number, password
 
 
 Creates a store procedure
