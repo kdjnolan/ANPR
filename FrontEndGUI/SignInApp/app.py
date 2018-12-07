@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.config['MYSQL_DATABASE_USER']     = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
 app.config['MYSQL_DATABASE_DB']       = 'users'
-app.config['MYSQL_DATABASE_HOST']     = '192.168.1.12'
+app.config['MYSQL_DATABASE_HOST']     = '192.168.1.1' # .12
 mysql.init_app(app)
 
 
@@ -21,6 +21,50 @@ def main():
 def showSignUp():
     return render_template('signup.html')
 
+#@app.route('/showSignedUp')
+#def showSignedUp():
+    #return render_template('signedup.html')
+    #return "Done.."
+
+
+
+# check database for a plate page
+@app.route('/showCheckDB')
+def showCheckDB():
+    return render_template('checkdb.html')
+
+
+
+
+# check database for a plate
+@app.route('/checkDB',methods=['POST','GET'])
+def checkDB():
+    try:
+         _registration = request.form['inputRegistration']
+         # validate the received values
+         if _registration:
+             conn = mysql.connect()
+             cursor = conn.cursor()
+             cursor.callproc('sp_findPlate', (_registration) )
+             data=cursor.fetchall();
+             print({' ':str(data[0])})
+             
+             if len(data) is 0:
+                 conn.commit()
+                 print "Checked"
+                 return json.dumps({'SUCCESS!' 'checked !'})
+             else:
+                 return json.dumps({'ERROR. JSON DUMP: ':str(data[0])})
+             cursor.close()
+             conn.close()
+         else:
+             return json.dumps({'html':'<span>Enter all required fields</span>'})
+    except Exception as e:
+        return json.dumps({'error':str(e)})
+
+
+
+
 
 @app.route('/signUp',methods=['POST','GET'])
 def signUp():
@@ -29,9 +73,6 @@ def signUp():
         _email = request.form['inputEmail']
         _registration = request.form['inputRegistration']
         _password = request.form['inputPassword']
-        #conn = mysql.connect()
-        #cursor = conn.cursor()
-
         # validate the received values
         if _name and _email and _registration and _password:
             # got data for  all fields
@@ -39,12 +80,11 @@ def signUp():
             conn = mysql.connect()
             cursor = conn.cursor()
             _hashed_password = generate_password_hash(_password)
-
             #print("Hashed Password is: "+_hashed_password )
             cursor.callproc('sp_createUser',(_name,_email,_registration,_hashed_password))
+
             data = cursor.fetchall()
-            #print "D"
-            #print(data)
+            #print({'databack:  ':str(data[0])})
             if len(data) is 0:
                 conn.commit()
                 # read the json dumps in browser's console window
@@ -53,7 +93,6 @@ def signUp():
                 return json.dumps({'ERROR. JSON DUMP: ':str(data[0])})
             cursor.close()
             conn.close()
-
         else:
             return json.dumps({'html':'<span>Enter all required fields</span>'})
     except Exception as e:
@@ -61,6 +100,8 @@ def signUp():
     #finally:
         #cursor.close()
         #conn.close()
+
+
 
 if __name__ == "__main__":
     app.run(port=5001,debug="True")

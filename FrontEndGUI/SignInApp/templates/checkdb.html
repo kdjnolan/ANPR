@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!--Window name-->
+    <title>Car Registration App</title>
+    <link href="http://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/docs/3.3/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link href="../static/css/signup.css" rel="stylesheet">
+    <script src="../static/js/jquery-1.11.2.js"></script>
+    <script src="../static/js/checkDB.js"></script>
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="header">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation" ><a href="/">Home     </a></li>
+            <li role="presentation"><a href="/showSignUp">Sign Up     </a></li>
+            <li role="presentation"><a href="/#">Sign In     </a></li>
+	    <li role="presentation" class="active"><a href="/showCheckDB">Check Reg</a></li>
+          </ul>
+        </nav>
+        <h4 class="text-muted">Check Up Database for Reg</h4>
+      </div>
+
+      <div class="jumbotron">
+	<h4>Enter Registration</h4>
+        <form class="form-signin">
+	        
+	<label for="inputRegistration" class="sr-only">Car Registration Check</label>
+        <input type="Registration" name="inputRegistration" id="inputRegistration" class="form-control" placeholder="Reg: eg 00G5667" required autofocus>
+
+
+	
+        
+        <button id="btnCheckDB" class="btn btn-lg btn-primary btn-block" type="button">Check Reg.</button>
+      </form>
+      </div>
+      <footer class="footer">
+        <p>&copy; 2018</p>
+      </footer>
+    </div>
+  </body>
+</html>
+
