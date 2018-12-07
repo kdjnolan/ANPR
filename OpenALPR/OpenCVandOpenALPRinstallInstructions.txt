@@ -1,0 +1,226 @@
+Installing OpenCV on RPi Raspbian Sept 2018
+
+I used this blog for help...
+
+http://webnautes.tistory.com/916
+
+--its written in Korean but is a good reference.--
+	
+	
+	
+To install OpenCV I began by installing some necessary packages:
+	sudo apt-get install build-essential cmake	//build-essential package includes libraries and //tools. Cmake needed to configure OpenCV
+	sudo apt-get install pkg-config	//needed to import info on libraries needed for compilation/linking
+	sudo apt-get install libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev   //to load and save image files
+	sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libxvidcore-dev libx263-dev libxine2-dev				//read/write video files of specific codec
+	sudo apt-get install libv4l-dev v4l-utils	//drivers and APIs to support real-time video capture
+	sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev //streaming video library
+	sudo apt-get install libgtk2.0-dev	//to create window to show videos or images
+	sudo apt-get install mesa-utils libgl1-mesa-dri libgtkgl2.0-dev libgtkglext1-dev	//for support
+	sudo apt-get install libatlas-base-dev gfortran libeigen3-dev	//libraries for optimisation
+	sudo apt-get install python2.7-dev python3-dev python-numpy python3-numpy	//numpy for arrays
+
+I decided to install opencv system wide instead of using a virtual environment.  To install I made a directory called opencv, moved to that location then downloaded opencv and opencv contributions with:
+	wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.3.zip
+	unzip opencv.zip
+	wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/3.4.3.zip
+	unzip opencv_contrib.zip
+This left me with two folders (ls -d */) and I cd into the opencv folder where I built the program.
+	cd opencv-3.4.3
+	mkdir build
+	cd build
+
+
+When I executed cmake I specified some install options:
+
+	cmake -D CMAKE_BUILD_TYPE=RELEASE \
+	-D CMAKE_INSTALL_PREFIX=/usr/local \
+	-D WITH_TBB=OFF \
+	-D WITH_IPP=OFF \
+	-D WITH_1394=OFF \
+	-D BUILD_WITH_DEBUG_INFO=OFF \
+	-D BUILD_DOCS=OFF \
+	-D INSTALL_C_EXAMPLES=ON \
+	-D INSTALL_PYTHON_EXAMPLES=ON \
+	-D BUILD_EXAMPLES=OFF \
+	-D BUILD_TESTS=OFF \
+	-D BUILD_PERF_TESTS=OFF \
+	-D ENABLE_NEON=ON \
+	-D ENABLE_VFPV3=ON \
+	-D WITH_QT=OFF \
+	-D WITH_GTK=ON \
+	-D WITH_OPENGL=ON \
+	-D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-3.4.3/modules \
+	-D WITH_V4L=ON \
+	-D WITH_FFMPEG=ON \
+	-D WITH_XINE=ON \
+	-D BUILD_NEW_PYTHON_SUPPORT=ON \
+	../
+	
+I had trouble boostdesc_bgm.i but overcame by properly installing cmake as done above.
+
+I then increased the swap size so I did not run into low memory errors at compile time when using multiple CPU cores.  I did this by opening the configuration file with administrative privileges on a text editor and changed the swapsize from 100 to 1024MB
+	sudo nano /etc/dphys-swapfile	//open the file to edit
+	
+Start compilation:
+	make -j4	// start compilation using all 4 cores
+	
+Install the result of the compilation with:
+	sudo make install
+	
+Then check etc directory for configuration file containing /usr/local/lib and if it doesn’t exist create it.	
+	cat /etc/ld.so.conf.d/*
+	sudo sh -c 'echo '/usr/local/lib' > /etc/ld.so.conf.d/opencv.conf'
+
+This helped-------WHAT DID IT DO AGAIN???
+	sudo ldconfig
+
+Then changed the swap size back to 100MB before restarting the service.
+	sudo /etc/init.d/dphys-swapfile restart
+
+I could not fimd opencv with:
+	pkg-config –modversion opencv
+	
+So I located and directed with:
+	sudo sh -c 'echo PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig >> /etc/bash.bashrc'
+	sudo sh -c 'echo export PKG_CONFIG_PATH >> /etc/bash.bashrc'
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+
+After installing various dependencies and tesseract, libtronica, opencv,I could install OpenALPR a framework for recognising number plates and also car manufacturer/model in a range of different countries.
+
+
+
+OpenALPR   Installation -----------------------------------
+
+
+
+I used GitHub OpenALPR 
+( https://github.com/openalpr/openalpr/wiki/Integrating-OpenALPR )
+ and this post 
+(   https://blog.vinczejanos.info/2017/05/01/install-openalpr-on-raspberry-pi-3-part-2/   )
+First, I cloned OpenALPR source code from its GitHub repository, built it then installed it.
+	cd /usr/src  
+	git clone https://github.com/openalpr/openalpr.git
+	cd openalpr/src  
+	mkdir build  
+	cd build
+	cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_SYSCONFDIR:PATH=/etc ..  
+
+
+
+
+I got the following error :
+-- Could NOT find JNI (missing:  JAVA_AWT_LIBRARY JAVA_JVM_LIBRARY JAVA_INCLUDE_PATH JAVA_INCLUDE_PATH2 JAVA_AWT_INCLUDE_PATH) 
+JAVA JNI library not found, skipping openalprjni compilation
+	So I installed jvm and made paths 
+	sudo cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_SYSCONFDIR:PATH=/etc -DJAVA_INCLUDE_PATH=/usr/lib/jvm/jdk-8-oracle-arm32-vfp-hflt/include -DJAVA_AWT_LIBRARY=/usr/lib/jvm/jdk-8-oracle-arm32-vfp-hflt/jre/lib/amd64/libawt.so -DJAVA_JVM_LIBRARY=/usr/lib/jvm/jdk-8-oracle-arm32-vfp-hflt/jre/lib/arm/server/libjvm.so ..
+OR THIS...
+	apt-get install openjdk-7-jdk  
+	export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-amd64/
+and then continued the build
+	make
+	make install
+These may be also needed: beanstalk etc
+
+
+To test:
+	wget http://plates.openalpr.com/h786poj.jpg -O lp.jpg  
+	alpr lp.jpg
+This worked and gave me a confidence level of 89 percent for the plate.
+
+
+
+
+
+Python Example
+from openalpr import Alpr
+
+alpr = Alpr("us", "/path/to/openalpr.conf", "/path/to/runtime_data")
+if not alpr.is_loaded():
+    print("Error loading OpenALPR")
+    sys.exit(1)
+alpr.set_top_n(20)
+alpr.set_default_region("md")
+results = alpr.recognize_file("/path/to/image.jpg")
+i = 0
+for plate in results['results']:
+    i += 1
+    print("Plate #%d" % i)
+    print("   %12s %12s" % ("Plate", "Confidence"))
+    for candidate in plate['candidates']:
+        prefix = "-"
+        if candidate['matches_template']:
+            prefix = "*"
+
+        print("  %s %12s%12f" % (prefix, candidate['plate'], candidate['confidence']))
+# Call when completely done to release memory
+alpr.unload()
+
+Better example here
+https://github.com/openalpr/openalpr/blob/master/src/bindings/python/test.py
+
+Virtual Environment Setup and Installation
+http://raspberrypi-aa.github.io/session4/venv.html
+sudo pip install virtualenv
+virtualenv flaskenv
+pi@ericpi ~/flaskenv$ cd flaskenv
+pi@ericpi ~/flaskenv$ source bin/activate
+(flaskenv)pi@ericpi ~/flaskenv $
+	
+	easy_install yolk    //to see what packages are installed in the venv
+	yolk -l
+To use the virtualenv in a python script, change the #!/usr/bin/python at the top of the file to #!/bin/python
+Install Scimpy, Numpy, Matplotlib,
+	http://scikit-image.org/docs/dev/install.html
+Nigerian one (sets up virtual environment and pip installs): Didn’t work in virtual env
+	https://blog.devcenter.co/developing-a-license-plate-recognition-system-with-machine-learning-in-python-787833569ccd
+so I just used apt-get:
+	sudo apt-get install python-matplotlib python-numpy python-pil python-scipy
+	sudo apt-get install build-essential cython
+	sudo apt-get install python-skimage
+when I ran the py file I got the error:
+** (licencePlateDetection.py:2640): WARNING **: Error retrieving accessibility bus address: org.freedesktop.DBus.Error.ServiceUnknown: The name org.a11y.Bus was not provided by any .service files
+After some research I solved the issue with the command:
+	sudo apt-get install at-spi2-core
+
+***scimpy
+http://scikit-image.org/docs/dev/install.html
+	pip uninstall scikit-image
+	git clone https://github.com/scikit-image/scikit-image.git
+	cd scikit-image
+	pip install -e .
+scikit isn’t compatible with python3 so scikit version has to be less than <0.0.15 . 
+
+
+You are running scikit-image on an unsupported version of Python.
+Unfortunately, scikit-image 0.15 and above no longer work with your installed
+version of Python (2.7.13).  You therefore have two options: either upgrade to
+Python 3.5, or install an older version of scikit-image.
+For Python 2.7 or Python 3.4, use
+	$ pip uninstall scikit-image
+	$ pip install 'scikit-image<0.15'
+	$ pip install pip setuptools --upgrade
+
+I shutdown the pi and fired it back up, went into the LPR folder and did not go into the virtual environment and ran 
+	python licencePlateDetection.py
+and got the error so installed necessary package
+TypeError: Couldn't find foreign struct converter for 'cairo.Context'
+	sudo apt-get install python-gi-cairo
+re-ran   python licencePlateDetection.py
+and got the binary image
+cca cca2
+
+Machine Learning-
+	pip install scikit-learn 
+
+	
