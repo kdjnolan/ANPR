@@ -1,0 +1,75 @@
+
+
+-- create SQL database called users
+CREATE DATABASE `users`
+
+  
+-- create table using python stored procedures
+Create TABLE `users`.sprocedure_user (
+  `user_id` INT AUTO_INCREMENT,
+  `user_name` VARCHAR(45) NULL,
+  `user_username` VARCHAR(45) NOT NULL,
+  `user_registration` VARCHAR(45) NOT NULL,
+  `user_password` VARCHAR(500) NOT NULL,
+  PRIMARY KEY (`user_id`));
+
+insert into users (user_name,user_username,user_registration,user_password ) values ('name','username','registration','user_password');
+
+  
+  
+  
+  
+ -- once created....
+ 
+-- create a python stored procedure called sp_createUser that recieves 4 values and
+-- creates a new user if username isnt already present 
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_createUser`(
+    IN p_name VARCHAR(50),
+    IN p_username VARCHAR(30),
+    IN p_registration VARCHAR(20),
+    IN p_password VARCHAR(500)
+)
+BEGIN
+	 -- if the username already exists...
+    IF ( select exists (select 1 from sprocedure_user where user_username = p_username) ) THEN
+		  -- dont overwrite
+        select 'Username Exists !!';
+    -- if a new entry...
+	-- insert details into the table
+    ELSE
+        insert into sprocedure_user(
+            user_name,
+            user_username,
+            user_registration,
+            user_password
+        )
+        values(
+            p_name,
+            p_username,
+            p_registration,
+            p_password
+        );
+    END IF;
+END$$
+DELIMITER ;
+
+
+
+
+
+
+
+-- IMPORTANT    GRANT ADMIN ACCESS TO THE DATABASE
+CREATE USER 'root'@'192.168.1.8' IDENTIFIED BY 'root';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.1.8'
+	WITH GRANT OPTION;
+
+-- IF USER LOCALHOST IS ALREADY CREATED
+--  CREATE USER 'root'@'localhost' IDENTIFIED BY 'root'; --  uncomment if not
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost'
+	WITH GRANT OPTION;
+
+
+	
+	
