@@ -2,6 +2,7 @@ from flask import Flask, render_template, json, request
 from flaskext.mysql import MySQL #pip install flask-mysql
 from werkzeug import generate_password_hash, check_password_hash
 
+#
 mysql = MySQL()
 app = Flask(__name__)
 
@@ -13,9 +14,11 @@ app.config['MYSQL_DATABASE_HOST']     = '192.168.1.1' # .12
 mysql.init_app(app)
 
 
+#homepage
 @app.route('/')
 def main():
     return render_template('index.html')
+
 
 @app.route('/showSignUp')
 def showSignUp():
@@ -26,6 +29,9 @@ def showSignUp():
     #return render_template('signedup.html')
     #return "Done.."
 
+@app.route('/showSignIn')
+def showSignIn():
+    return render_template('signin.html')
 
 
 # check database for a plate page
@@ -100,6 +106,46 @@ def signUp():
     #finally:
         #cursor.close()
         #conn.close()
+
+
+
+
+
+
+# for sign in, get email and password and then compar the database
+@app.route('/signIn',methods=['POST','GET'])
+def signIn():
+    try:
+        _email = request.form['inputEmail']
+        _password = request.form['inputPassword']
+        # validate the received values
+        if _email and _password:
+            # got data for  all fields
+            # check data against sqlDB
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.callproc('sp_checkUser'(_email, _hashed_password))
+	    data=cursor.fetchall()
+            print({' ':str(data[0])})
+            #print({'databack:  ':str(data[0])})
+
+
+            if len(data) is 0:
+                conn.commit()
+                # to read the json dumps in browser's console window
+                return json.dumps({'SUCCESS!':'User found'})
+            else:
+                return json.dumps({'ERROR. JSON DUMP: ':str(data[0])})
+            cursor.close()
+            conn.close()
+        else:
+            return json.dumps({'html':'<span>Enter all required fields</span>'})
+    except Exception as e:
+        return json.dumps({'error':str(e)})
+    #finally:
+        #cursor.close()
+        #conn.close()
+
 
 
 
