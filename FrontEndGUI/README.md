@@ -1,11 +1,12 @@
 
 
 Client HTML -> 
-   jQuery button pulls info ->  
-         JavaScript sends info with AJAX HTTP protocol -> 
-           python gets request and queries SQL database using Prepared Statements, debugs with JSON dumps  . 
-     <--python recieves SQL data and sends back AJAX response   <------------------------------------------
-<--use js to update client HTML 
+   jQuery button pulls info -> 
+   JavaScript sends info with AJAX HTTP protocol -> 
+   python gets request and queries SQL database using Prepared Statements, debugs with JSON dumps  . 
+   <-------
+   <--python recieves SQL data and sends back AJAX response 
+   <--use js to update client HTML 
 
 
 This is a Car Registration App built using Python Flask Web Framework 
