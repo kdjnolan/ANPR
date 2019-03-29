@@ -2,10 +2,7 @@
 
 -- create SQL database called users
 CREATE DATABASE `users`
-
-
 -- CREATE DATABASE users
-  
 CREATE TABLE users (
     user_id int AUTO_INCREMENT,
     user_name VARCHAR(45) NULL,
@@ -13,11 +10,9 @@ CREATE TABLE users (
     user_registration VARCHAR(45) NOT NULL,
     user_password VARCHAR(500) NOT NULL,
     PRIMARY KEY (user_id));
-
 insert into sprocedure_user (user_name, user_username, user_registration,user_password ) values ('name','username','registration','user_password');
 --  insert into users (user_name, user_username, user_registration,user_password ) values ('name','username','registration','user_password');
 
-  
   
 -- create table using python stored procedures
 Create TABLE `users`.`sprocedure_user` (
@@ -27,13 +22,10 @@ Create TABLE `users`.`sprocedure_user` (
   `user_registration` VARCHAR(45) NOT NULL,
   `user_password` VARCHAR(500) NOT NULL,
   PRIMARY KEY (`user_id`));
-
 insert into users (user_name,user_username,user_registration,user_password ) values ('name','username','registration','user_password');
-
-  
   
  -- once created....
- 
+  
 -- create a python stored procedure called sp_createUser that recieves 4 values and
 -- creates a new user if username isnt already present 
 DELIMITER $$
@@ -44,11 +36,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_createUser`(
     IN p_password VARCHAR(500)
 )
 BEGIN
-	 -- if the username already exists...
+    -- if the username already exists...
     IF ( select exists (select 1 from sprocedure_user where user_username = p_username) ) THEN
-		  -- dont overwrite
+	-- dont overwrite
         select 'Username Exists !!';
-    -- if a new entry...
+        -- if a new entry...
 	-- insert details into the table
     ELSE
         insert into sprocedure_user(
@@ -70,20 +62,15 @@ DELIMITER ;
 
 
 
-
-
-
-
-
-
 -- create a python stored procedure called sp_findPlate that recieves 1 value 
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_findPlate`(
     IN p_registration VARCHAR(20)
 )
 BEGIN
-	 -- if the username already exists...
-    IF ( select exists (select * from sprocedure_user where user_registration like 'p_registration') ) THEN
+    -- if the registration exists...
+    --IF ( select exists (select * from sprocedure_user where user_registration like 'p_registration') ) THEN
+    IF ( select exists (select 1 from sprocedure_user where user_registration=p_registration) ) THEN
         select 'Plate Found!';
     ELSE
         select 'No Record of Plate on Database !!';
