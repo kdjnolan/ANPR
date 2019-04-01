@@ -1,6 +1,6 @@
 $(function(){
 	$('#btnSignUp').click(function(){
-		console.log("Button(btnSignUp) activated the javascript code");
+                console.log("Button pressed. 'signUp.js' now running. Attempting AJAX POST on javascript file");
 		$.ajax({
 			url: '/signUp',
 			data: $('form').serialize(),
