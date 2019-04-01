@@ -14,12 +14,12 @@ app.config['MYSQL_DATABASE_HOST']     = '192.168.1.1' # .12
 mysql.init_app(app)
 
 
-#homepage
+# homepage
 @app.route('/')
 def main():
     return render_template('index.html')
 
-
+# sign up page
 @app.route('/showSignUp')
 def showSignUp():
     return render_template('signup.html')
@@ -29,10 +29,10 @@ def showSignUp():
     #return render_template('signedup.html')
     #return "Done.."
 
+# sign in page
 @app.route('/showSignIn')
 def showSignIn():
     return render_template('signin.html')
-
 
 # check database for a plate page
 @app.route('/showCheckDB')
@@ -40,21 +40,23 @@ def showCheckDB():
     return render_template('checkdb.html')
 
 
-
-
 # check database for a plate
 @app.route('/checkDB',methods=['POST','GET'])
 def checkDB():
     try:
          _registration = request.form['inputRegistration']
-         # validate the received values
+         # validate the received value
          if _registration:
+             # got data for  all fields
+             # check data on sql database
              conn = mysql.connect()
              cursor = conn.cursor()
+             #compare to DB
+             #print(_registration)
              cursor.callproc('sp_findPlate', (_registration) )
              data=cursor.fetchall();
-             print({' ':str(data[0])})
              
+             #print({' ':str(data[0])})
              if len(data) is 0:
                  conn.commit()
                  print "Checked"
@@ -85,8 +87,13 @@ def signUp():
             # save data to sql
             conn = mysql.connect()
             cursor = conn.cursor()
+
+            #password hashing
+            print("Hashed Password is: "+_hashed_password )
             _hashed_password = generate_password_hash(_password)
-            #print("Hashed Password is: "+_hashed_password )
+            print("Hashed Password is: "+_hashed_password )
+
+            #send all data to database
             cursor.callproc('sp_createUser',(_name,_email,_registration,_hashed_password))
 
             data = cursor.fetchall()
@@ -124,6 +131,8 @@ def signIn():
             # check data against sqlDB
             conn = mysql.connect()
             cursor = conn.cursor()
+
+            #check for email&password match on SQL database
             cursor.callproc('sp_checkUser'(_email, _hashed_password))
 	    data=cursor.fetchall()
             print({' ':str(data[0])})
