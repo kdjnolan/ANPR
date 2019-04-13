@@ -70,7 +70,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_findPlate`(
 BEGIN
     -- if the registration exists...
     --IF ( select exists (select * from sprocedure_user where user_registration like 'p_registration') ) THEN
-    IF ( select exists (select 1 from sprocedure_user where user_registration=p_registration) ) THEN
+    IF ( select exists (select 1 from sprocedure_user where user registration LIKE BINARY p_registration) ) THEN
         select 'Plate Found!';
     ELSE
         select 'No Record of Plate on Database !!';
