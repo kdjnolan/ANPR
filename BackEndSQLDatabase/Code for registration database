@@ -25,7 +25,8 @@ Create TABLE `users`.`sprocedure_user` (
 insert into users (user_name,user_username,user_registration,user_password ) values ('name','username','registration','user_password');
   
  -- once created....
-  
+
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------
 -- create a python stored procedure called sp_createUser that recieves 4 values and
 -- creates a new user if username isnt already present 
 DELIMITER $$
@@ -40,9 +41,9 @@ BEGIN
     IF ( select exists (select 1 from sprocedure_user where user_username = p_username) ) THEN
 	-- dont overwrite
         select 'Username Exists !!';
+    ELSE
         -- if a new entry...
 	-- insert details into the table
-    ELSE
         insert into sprocedure_user(
             user_name,
             user_username,
@@ -58,19 +59,31 @@ BEGIN
     END IF;
 END$$
 DELIMITER ;
-
-
-
-
--- create a python stored procedure called sp_findPlate that recieves 1 value 
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------
+-- Create a python SP called sp_checkUser that recieves USERNAME(_email) and PASSWORD(_password) 
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_checkUser`(
+    IN p_username VARCHAR(30),
+    IN p_password VARCHAR(500)
+)
+BEGIN
+    -- if the username exists...
+    IF ( select exists (select 1 from sprocedure_user where user_username=p_username and user_password=p_password) ) THEN
+        select 'Credentials Found!';
+    ELSE
+        select 'No Record of Plate on Database !!';
+    END IF;
+END$$
+DELIMITER ;
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------
+-- Create a python stored procedure called sp_findPlate that recieves 1 value 
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_findPlate`(
     IN p_registration VARCHAR(20)
 )
 BEGIN
     -- if the registration exists...
-    --IF ( select exists (select * from sprocedure_user where user_registration like 'p_registration') ) THEN
-    IF ( select exists (select 1 from sprocedure_user where user registration LIKE BINARY p_registration) ) THEN
+    IF ( select exists (select 1 from sprocedure_user where user registration = p_registration) ) THEN
         select 'Plate Found!';
     ELSE
         select 'No Record of Plate on Database !!';
@@ -80,9 +93,7 @@ DELIMITER ;
 
 
 
-
-
--- IMPORTANT    GRANT ADMIN ACCESS TO THE DATABASE
+-- ***   IMPORTANT   ***   GRANT ADMIN ACCESS TO THE DATABASE
 CREATE USER 'root'@'192.168.1.8' IDENTIFIED BY 'root';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.1.8'
 	WITH GRANT OPTION;
@@ -102,7 +113,7 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.1.5'
 	
 	-- .py
 --	print "Getting Reg"
---	cursor.execute("SELECT * FROM users WHERE _registration=?")
+--	cursor.execute("SELECT * FROM users WHERE _registration=?") # i made a stored procedure in MySQL for this instead (sp_findUser)
 --	data = cursor.fetchone()
 --	print(str(data))
 	
